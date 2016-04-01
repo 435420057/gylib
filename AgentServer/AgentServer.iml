@@ -2,14 +2,16 @@
 <module type="GO_MODULE" version="4">
   <component name="GoLibraries">
     <option name="urls">
-      <set />
+      <set>
+        <option value="file://$MODULE_DIR$" />
+      </set>
     </option>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Go 1.5.3" jdkType="Go SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="GOPATH &lt;gylib&gt;" level="project" />
+    <orderEntry type="library" name="GOPATH &lt;AgentServer&gt;" level="project" />
   </component>
 </module>

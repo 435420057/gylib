@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/gylib.iml" filepath="$PROJECT_DIR$/.idea/gylib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AgentServer/AgentServer.iml" filepath="$PROJECT_DIR$/AgentServer/AgentServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FileServer/FileServer.iml" filepath="$PROJECT_DIR$/FileServer/FileServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Library/Library.iml" filepath="$PROJECT_DIR$/Library/Library.iml" />
     </modules>
   </component>
 </project>

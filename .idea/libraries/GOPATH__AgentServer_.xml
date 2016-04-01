@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="GOPATH &lt;gylib&gt;">
+  <library name="GOPATH &lt;AgentServer&gt;">
     <CLASSES>
       <root url="file://D:/gopath/src/gopkg.in" />
       <root url="file://D:/gopath/src/github.com" />
@@ -25,7 +25,6 @@
       <root url="file://D:/gopath/src/github.com/gorilla/context/.git" />
       <root url="file://D:/gopath/src/github.com/qor/inflection/.git" />
       <root url="file://D:/gopath/src/github.com/elgs/gostrgen/.git" />
-      <root url="file://$PROJECT_DIR$" />
       <root url="file://D:/gopath/src/github.com/golang/protobuf/protoc-gen-go/testdata" />
       <root url="file://$PROJECT_DIR$/Library" />
       <root url="file://D:/gopath/src/github.com/pelletier/go-toml/.git" />

@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="GOPATH &lt;gylib&gt;">
+  <library name="GOPATH &lt;Library&gt;">
     <CLASSES>
       <root url="file://D:/gopath/src/gopkg.in" />
       <root url="file://D:/gopath/src/github.com" />
@@ -17,6 +17,7 @@
       <root url="file://$PROJECT_DIR$/FileServer" />
       <root url="file://$PROJECT_DIR$/AgentServer" />
       <root url="file://D:/gopath/src/golang.org/x/net/html/testdata" />
+      <root url="file://$PROJECT_DIR$/Library" />
       <root url="file://D:/gopath/src/github.com/coreos/go-etcd/.git" />
       <root url="file://D:/gopath/src/golang.org/x/net/html/charset/testdata" />
       <root url="file://D:/gopath/src/github.com/lib/pq/.git" />
@@ -27,7 +28,6 @@
       <root url="file://D:/gopath/src/github.com/elgs/gostrgen/.git" />
       <root url="file://$PROJECT_DIR$" />
       <root url="file://D:/gopath/src/github.com/golang/protobuf/protoc-gen-go/testdata" />
-      <root url="file://$PROJECT_DIR$/Library" />
       <root url="file://D:/gopath/src/github.com/pelletier/go-toml/.git" />
       <root url="file://D:/gopath/src/golang.org/x/net/http2/testdata" />
       <root url="file://D:/gopath/src/github.com/stvp/go-toml-config/.git" />
