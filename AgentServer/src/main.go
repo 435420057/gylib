@@ -55,7 +55,6 @@ func main() {
 			logger.Debug(buf)
 		}
 	}()
-
 	port := fmt.Sprintf(":%s", servicePort)
 	http.ListenAndServe(port, nil)
 }

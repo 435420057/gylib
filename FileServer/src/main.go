@@ -2,12 +2,11 @@ package main
 
 import (
 	"net"
-	"github.com/kyugao/go-logger/logger"
-	_ "logs"
-	"google.golang.org/grpc"
-	"external"
+	"gylogger"
+	"gymongo"
+	"gyservice/proto"
 	"service"
-	_ "db"
+	"google.golang.org/grpc"
 	"github.com/stvp/go-toml-config"
 	"fmt"
 )
@@ -20,6 +19,8 @@ var (
 )
 
 func init() {
+	logger.InitLogger("./conf/logger.conf")
+	mongo.InitMongo("./conf/mongo.conf")
 	loadConfig()
 }
 
@@ -46,7 +47,7 @@ func main() {
 	// 创建grpc实例
 	grpcServer := grpc.NewServer()
 	// 注册fileService服务
-	external.RegisterServiceServer(grpcServer, service.InitServer())
+	proto.RegisterServiceServer(grpcServer, service.InitServer())
 	// 启动服务
 	grpcServer.Serve(lis)
 }

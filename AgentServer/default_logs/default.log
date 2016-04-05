@@ -1,0 +1,8 @@
+2016/04/05 18:21:10 config.go:31: INFO [Log path initialised.]
+2016/04/05 18:21:10 cache.go:52: INFO [loaded cache config]
+2016/04/05 18:21:10 main.go:27: WARN [load service config error, open ./conf/service.conf: The system cannot find the file specified.]
+2016/04/05 18:21:10 main.go:49: INFO [====== Start agent service node @ 8080 ======]
+2016/04/05 18:22:30 config.go:31: INFO [Log path initialised.]
+2016/04/05 18:22:30 cache.go:52: INFO [loaded cache config]
+2016/04/05 18:22:30 main.go:27: WARN [load service config error, open ./conf/service.conf: The system cannot find the file specified.]
+2016/04/05 18:22:30 main.go:49: INFO [====== Start agent service node @ 8080 ======]

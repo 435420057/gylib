@@ -1,21 +1,23 @@
 package handler
 
 import (
-	"external/cache/message"
-	"service/param"
-	"external/respcode"
+	"gycache/message"
+	"gyparam"
+	"gyservice/respcode"
 	"db/dao"
 	"db/entity"
-	"github.com/kyugao/go-logger/logger"
+	"gylogger"
 )
 
 func CheckAppVersion(req map[string]interface{}) (resp *message.Response) {
 	resp = message.NewResponse()
 
-	platform, okPlatform := param.GetPlatform(req)
-	version, okVersion := param.GetVersion(req)
+	platform, okPlatform := param.GetStringWithKey(req, "platform")
+	version, okVersion := param.GetStringWithKey(req, "version")
 	if !(okPlatform && okVersion) {
 		resp.SetRespCode(respcode.RC_GENERAL_PARAM_ERR)
+		resp.SetParam("platform", okPlatform)
+		resp.SetParam("version", okVersion)
 		return
 	}
 

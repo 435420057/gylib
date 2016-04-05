@@ -1,19 +1,18 @@
 package service
 
 import (
-	log "github.com/kyugao/go-logger/logger"
-	"external/action"
+	"gylogger"
+	"gyservice/action"
 	"service/handler"
-	"external/service"
+	"gyservice/service"
 )
 
 func InitServer() *service.ServiceServer {
-	log.Info("Register file handlers.")
+	logger.Info("Register file handlers.")
 	server := service.NewServiceServer()
-	server.RegHandler(int32(action.Action_LoadFile), handler.LoadFileHandler)
-	server.RegHandler(int32(action.Action_SaveFile), handler.SaveFileHandler)
-	server.RegHandler(int32(action.Action_DeleteFile), handler.DeleteFileHandler)
-	server.RegHandler(int32(action.Action_CheckAppVersion), handler.CheckAppVersion)
-	server.RegHandler(int32(action.Action_CheckFirmwareVersion), handler.CheckFirmwareVersion)
+	server.RegHandler(action.Action_LoadFile, handler.LoadFileHandler)
+	server.RegHandler(action.Action_SaveFile, handler.SaveFileHandler)
+	server.RegHandler(action.Action_DeleteFile, handler.DeleteFileHandler)
+	server.RegHandler(action.Action_CheckAppVersion, handler.CheckAppVersion)
 	return server
 }

@@ -1,18 +1,20 @@
 package handler
 import (
 	"net/http"
-	log "github.com/kyugao/go-logger/logger"
+	"gylogger"
 	"io/ioutil"
 	cFile "gycache/file"
 	"encoding/json"
 	"gycache/token"
 	"github.com/gorilla/mux"
-	//"external/discover"
-	//"external/action"
 	"golang.org/x/net/context"
 	"fmt"
 	"gyservice/respcode"
 	"gycache/message"
+	"gyservice/discover"
+	"gyservice/action"
+	"gyservice/proto"
+	"reflect"
 )
 
 // 5MB
@@ -34,7 +36,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		// validate the tokenStr
 		_, _, ok := token.Validate(tokenStr)
 		if !ok {
-			log.Debugf("token %s expired.\n", tokenStr)
+			logger.Debugf("token %s expired.\n", tokenStr)
 			agentResp.SetRespCode(respcode.RC_GENERAL_APP_ERR)
 			agentResp.SetParam("error", "Token invalid or expired.")
 		} else {
@@ -68,7 +70,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	name, contentType, content, exists := cFile.GetCacheFile(fileId, false)
 
 	if !exists {
-		log.Debugf("load file %s request to file node", fileId)
+		logger.Debugf("load file %s request to file node", fileId)
 		client, _ := discover.GetClient(action.Action_LoadFile)
 
 		if client == nil {
@@ -79,15 +81,16 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 
 		params := map[string]interface{}{"fileId":fileId}
 		request := &message.Request{Action:action.Action_LoadFile, Params:params}
-		cachedReq, err := message.CacheReq(request)
+		key, err := message.CacheMsg(request)
+		cachedReq := &proto.Request{key}
 
 		clientResp, err := client.Serve(context.Background(), cachedReq)
-		log.Debug("clientResp:", clientResp)
+		logger.Debug("clientResp:", clientResp)
 		if err == nil {
-			respByte, _ := message.GetCacheResp(clientResp.ResponseKey)
-			log.Debug(string(respByte))
+			respByte, _ := message.GetMsg(clientResp.Key, reflect.TypeOf([]byte{}))
+			logger.Debug(string(respByte.([]byte)))
 			respObj := &message.Response{}
-			err := json.Unmarshal(respByte, respObj)
+			err := json.Unmarshal(respByte.([]byte), respObj)
 			if err == nil {
 				fileId, _ := respObj.Params["fileId"].(string)
 				name, contentType, content, exists = cFile.GetCacheFile(fileId, false)
@@ -96,7 +99,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		log.Debug("exists in cache")
+		logger.Debug("exists in cache")
 	}
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", name))
 	w.Header().Add("Content-type", contentType)

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package service;
+package proto;
 option java_package = "gy.service";
 
 message Request {

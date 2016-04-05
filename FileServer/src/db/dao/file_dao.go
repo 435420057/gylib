@@ -1,7 +1,7 @@
 package dao
 import (
 	"gopkg.in/mgo.v2/bson"
-	"db"
+	"gymongo"
 	"gopkg.in/mgo.v2"
 	"errors"
 	log "github.com/kyugao/go-logger/logger"
@@ -16,7 +16,7 @@ func LoadFile(fileId string) (name string, contentType string, content []byte, e
 		return
 	}
 
-	gridFS := db.GetGridFS(category)
+	gridFS := mongo.GetGridFS(category)
 	gridFile, err := gridFS.OpenId(bson.ObjectIdHex(fileId))
 
 	log.Debugf("find grid file %v, err %v:", gridFile, err)
@@ -32,14 +32,14 @@ func LoadFile(fileId string) (name string, contentType string, content []byte, e
 }
 
 func SaveFile(name string, contentType string, content []byte) (collection string, fileId string, dbName string, err error) {
-	gridFS := db.GetGridFS(category)
+	gridFS := mongo.GetGridFS(category)
 	file, err := gridFS.Create(name)
 	if err != nil {
 		return
 	} else {
 		fileId = file.Id().(bson.ObjectId).Hex()
 		collection = category
-		dbName = db.DBName
+		dbName = mongo.DBName
 		file.SetContentType(contentType)
 		num, err := file.Write(content)
 		log.Debug(num, ":", err)
@@ -49,7 +49,7 @@ func SaveFile(name string, contentType string, content []byte) (collection strin
 }
 
 func DeleteFile(fileId string) (err error) {
-	gridFS := db.GetGridFS(category)
+	gridFS := mongo.GetGridFS(category)
 	if (!bson.IsObjectIdHex(fileId)) {
 		err = errors.New("invalid id hex string.")
 	} else {

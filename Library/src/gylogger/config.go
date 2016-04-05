@@ -3,6 +3,7 @@ package logger
 import (
 	"os"
 	"github.com/stvp/go-toml-config"
+	"github.com/kyugao/go-logger/logger"
 )
 
 var (
@@ -13,8 +14,8 @@ var (
 )
 
 func InitLogger(path string) {
+	logger.Infof("Init logger with given config file %s", path)
 	loadConfig(path)
-
 	_, err := os.Stat(logPath)
 	if !os.IsExist(err) {
 		err = os.MkdirAll(logPath, os.ModePerm)
@@ -33,12 +34,21 @@ func InitLogger(path string) {
 
 func loadConfig(path string) {
 	logConfig := config.NewConfigSet("logConfig", config.ExitOnError)
-	logConfig.StringVar(&logPath, "log_path", "./logs/")
-	logConfig.StringVar(&logFile, "log_file", "app.log")
-	logConfig.BoolVar(&enableConsole, "console", true)
-	var tempLeveStr string
-	logConfig.StringVar(&tempLeveStr, "level", "INFO")
-	switch tempLeveStr {
+	logConfig.StringVar(&logPath, "log_path", "./default_logs/")
+	logConfig.StringVar(&logFile, "log_file", "default.log")
+	var tempLevelStr string
+	logConfig.StringVar(&tempLevelStr, "log_level", "INFO")
+	logConfig.BoolVar(&enableConsole, "enable_console", false)
+
+	err := logConfig.Parse(path)
+	if err != nil {
+		Warnf("load logger config error, %v", err)
+	} else {
+		Infof("loaded logger config level = %d", level)
+	}
+
+	logger.Info(enableConsole, tempLevelStr)
+	switch tempLevelStr {
 	case "ALL":
 		level = ALL
 	case "DEBUG":
@@ -55,10 +65,4 @@ func loadConfig(path string) {
 		level = OFF
 	}
 
-	err := logConfig.Parse(path)
-	if err != nil {
-		Warnf("load dbconfig error, %v", err)
-	} else {
-		Info("loaded dbconfig")
-	}
 }

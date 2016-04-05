@@ -2,8 +2,8 @@ package entity
 
 import (
 	"gopkg.in/mgo.v2/bson"
-	"db"
-	"github.com/kyugao/go-logger/logger"
+	"gymongo"
+	"gylogger"
 	"strings"
 	"errors"
 )
@@ -45,7 +45,7 @@ func ParseAppVersionStr(versionStr string) (version, sub, iteration, channel str
 }
 
 func InitAppVersion() {
-	collection := db.GetCollection(ColAppVersion)
+	collection := mongo.GetCollection(ColAppVersion)
 	countAndroid, _ := collection.Find(bson.M{"platform":"android"}).Count()
 	countIos, _ := collection.Find(bson.M{"platform":"ios"}).Count()
 	if countAndroid <= 0 {

@@ -1,15 +1,18 @@
 package handler
 
 import (
-	"external/action"
+	"gyservice/action"
 	"golang.org/x/net/context"
 	"encoding/json"
 	"net/http"
 	"github.com/gorilla/mux"
-	"external/discover"
+	"gyservice/discover"
 	log "github.com/kyugao/go-logger/logger"
-	"external/respcode"
-	"external/cache/message"
+	"gyservice/respcode"
+	"gycache/message"
+	"fmt"
+	"gyservice/proto"
+	"reflect"
 )
 
 func FormHandler(w http.ResponseWriter, r *http.Request) {
@@ -20,8 +23,11 @@ func FormHandler(w http.ResponseWriter, r *http.Request) {
 
 	actionCode, ok := action.ActionFromName(actionName)
 	if !ok {
-		log.Debug("Unsupport function", actionCode.Name())
-		respByte, _ = json.Marshal(respcode.RC_UNSUPPORT_FUNCTION)
+		tempResp := message.NewResponse()
+		log.Debug("Unsupport function", actionName)
+		tempResp.SetRespCode(respcode.RC_GENERAL_SYS_ERR)
+		tempResp.SetParam("error", fmt.Sprintf("Action %s is not supported", actionName))
+		respByte, _ = json.Marshal(tempResp)
 	} else {
 		r.ParseForm()
 		params := make(map[string]interface{})
@@ -30,23 +36,29 @@ func FormHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		request := &message.Request{Action:actionCode, Params:params}
 
-		cachedReq, err := message.CacheReq(request)
+		key, err := message.CacheMsg(request)
 		if err != nil {
 			respByte, _ = json.Marshal(respcode.RC_GENERAL_SYS_ERR)
 		} else {
-			log.Debugf("Cached request key %s request: %v", cachedReq.RequestKey, request)
+			log.Debugf("Cached request key %s request: %v", key, request)
 			client, _ := discover.GetClient(actionCode)
 
 			if client == nil {
-				respByte, _ = json.Marshal(respcode.RC_SERVICE_UNAVAILABLE)
+				tempResp := message.NewResponse()
+				log.Debug("Service node is unavailable.")
+				tempResp.SetRespCode(respcode.RC_GENERAL_SYS_ERR)
+				tempResp.SetParam("error", fmt.Sprintf("Service node for %s is unavailable.", actionName))
+				respByte, _ = json.Marshal(tempResp)
 			} else {
+				cachedReq := &proto.Request{}
 				clientResp, err := client.Serve(context.Background(), cachedReq)
 				log.Debug("response from node:", clientResp, err)
-				respByte, err = message.GetCacheResp(clientResp.ResponseKey)
+				tempByte, err := message.GetMsg(clientResp.Key, reflect.TypeOf([]byte{}))
 				if err != nil {
 					log.Debugf("Get cache resp error: %s.", err.Error())
 					respByte, _ = json.Marshal(respcode.RC_GENERAL_SYS_ERR)
 				} else {
+					respByte = tempByte.([]byte)
 					log.Debugf("Get cache resp: %s.", string(respByte))
 				}
 			}

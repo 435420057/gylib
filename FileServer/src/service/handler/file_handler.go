@@ -1,21 +1,22 @@
 package handler
+
 import (
-	"external/cache/message"
-	"service/param"
-	"external/respcode"
+	"gycache/message"
+	"gyparam/objId"
+	"gyservice/respcode"
 	"db/dao"
-	"external/cache/file"
-	log "github.com/kyugao/go-logger/logger"
+	"gycache/file"
+	"gylogger"
 )
 
 func DeleteFileHandler(req map[string]interface{}) (resp *message.Response) {
 	resp = message.NewResponse()
 
-	var fileId string
-	var ok bool
+	fileId, okFileId := objId.GetObjectIdHexStringWithKey(req, "fileId")
 
-	if fileId, ok = param.GetFileId(req); !ok {
+	if !okFileId {
 		resp.SetRespCode(respcode.RC_GENERAL_PARAM_ERR)
+		resp.SetParam("fileId", okFileId)
 		return
 	}
 
@@ -31,11 +32,12 @@ func DeleteFileHandler(req map[string]interface{}) (resp *message.Response) {
 
 func LoadFileHandler(req map[string]interface{}) (resp *message.Response) {
 	resp = message.NewResponse()
-	var fileId string
-	var ok bool
 
-	if fileId, ok = param.GetFileId(req); !ok {
+	fileId, okFileId := objId.GetObjectIdHexStringWithKey(req, "fileId")
+
+	if !okFileId {
 		resp.SetRespCode(respcode.RC_GENERAL_PARAM_ERR)
+		resp.SetParam("fileId", okFileId)
 		return
 	}
 
@@ -45,25 +47,26 @@ func LoadFileHandler(req map[string]interface{}) (resp *message.Response) {
 			file.NewCacheFileWithKey(fileId, name, contentType, content, 1)
 		} else {
 			resp.SetRespCode(respcode.RC_GENERAL_SYS_ERR)
-			log.Info(err)
+			logger.Info(err)
 			return
 		}
 	}
 
 	resp.SetRespCode(respcode.RC_GENERAL_SUCC)
 	resp.SetParam("fileId", fileId)
-	log.Debug("LoadFileHandler resp:", resp)
+	logger.Debug("LoadFileHandler resp:", resp)
 
 	return
 }
 
 func SaveFileHandler(req map[string]interface{}) (resp *message.Response) {
 	resp = message.NewResponse()
-	var fileId string
-	var ok bool
 
-	if fileId, ok = param.GetCacheKey(req); !ok {
+	fileId, okFileId := objId.GetObjectIdHexStringWithKey(req, "fileId")
+
+	if !okFileId {
 		resp.SetRespCode(respcode.RC_GENERAL_PARAM_ERR)
+		resp.SetParam("fileId", okFileId)
 		return
 	}
 
@@ -71,7 +74,7 @@ func SaveFileHandler(req map[string]interface{}) (resp *message.Response) {
 
 	if exists {
 		collection, fileId, dbName, err := dao.SaveFile(name, contentType, content)
-		log.Debug("save cached file into mongodb", fileId, err)
+		logger.Debug("save cached file into mongodb", fileId, err)
 		if err == nil {
 			resp.SetRespCode(respcode.RC_GENERAL_SUCC)
 			resp.SetParam("fileId", fileId)
@@ -82,7 +85,7 @@ func SaveFileHandler(req map[string]interface{}) (resp *message.Response) {
 		}
 	} else {
 		resp.SetRespCode(respcode.RC_GENERAL_SYS_ERR)
-		log.Info("Could not find cached file, or expired.")
+		logger.Info("Could not find cached file, or expired.")
 	}
 
 	return

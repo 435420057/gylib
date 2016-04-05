@@ -1,6 +1,7 @@
 package service
 
 import (
+	"gyservice/proto"
 	"golang.org/x/net/context"
 	"gylogger"
 	"encoding/json"
@@ -19,7 +20,7 @@ type ServiceServer struct {
 	Router map[int32]func(map[string]interface{}) *cMsg.Response
 }
 
-func (server *ServiceServer) Serve(ctx context.Context, req *Request) (resp *Response, err error) {
+func (server *ServiceServer) Serve(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -44,10 +45,10 @@ func (server *ServiceServer) Serve(ctx context.Context, req *Request) (resp *Res
 		logger.Debugf("Response from function %s.", string(cacheContent))
 	}
 	respKey, err := cMsg.CacheMsg(cacheContent)
-	resp = &Response{Key:respKey}
+	resp = &proto.Response{Key:respKey}
 	return
 }
 
-func (server *ServiceServer) RegHandler(key int32, function func(map[string]interface{}) *cMsg.Response) {
-	server.Router[key] = function
+func (server *ServiceServer) RegHandler(action int32, function func(map[string]interface{}) *cMsg.Response) {
+	server.Router[action] = function
 }

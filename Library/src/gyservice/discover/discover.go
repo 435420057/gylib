@@ -10,13 +10,13 @@ import (
 	"github.com/coreos/go-etcd/etcd"
 	"gylogger"
 	"google.golang.org/grpc"
-	. "gyservice/service"
+	"gyservice/proto"
 )
 
 const (
 	DEFAULT_ETCD = "http://uat-sz.lansion.cn:4001"
-	DEFAULT_SERVICE_PATH = "/yanzhi"
-	DEFAULT_NAME_FILE = "/yanzhi/names"
+	DEFAULT_SERVICE_PATH = "/gy"
+	DEFAULT_NAME_FILE = "/gy/names"
 	DEFAULT_DIAL_TIMEOUT = 10 * time.Second
 	RETRY_DELAY = 10 * time.Second
 )
@@ -260,10 +260,10 @@ func GetServiceWithId(path string, id string) *grpc.ClientConn {
 	return _default_pool.get_service_with_id(path, id)
 }
 
-func GetServiceClient(path string) ServiceClient {
+func GetServiceClient(path string) proto.ServiceClient {
 	conn := _default_pool.get_service(path)
 	if conn != nil {
-		return NewServiceClient(conn)
+		return proto.NewServiceClient(conn)
 	}
 	return nil
 }
